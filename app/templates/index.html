@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 {% load crispy_forms_tags %}
 {% load static %}
+
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 <html lang="en">
 <head>
@@ -20,6 +21,22 @@
     {% endif %}
 </head>
 <body>
+    <nav class="navbar  fixed-top navbar-dark bg-primary">
+        <div class="container-fluid">
+            <h3 class="navbar-brand">HOME</h3>
+            <form class="d-flex">                            
+                <a href="{% url 'logout' %}">
+                <button class="btn btn-primary" >
+                    <span > Logout</span> 
+                    <img src="static\images\img_avatar1.png" alt="Avatar Logo" style="width:40px;" class="rounded-pill">
+                </button> 
+                </a>
+          </form>
+        </div>
+      </nav>
+  
+    
+    <!-- {% block navbar %} -->
     <br><br><br>
     <h1 style="text-align: center; color: red; " >Welcome to SIP</h1>
     <div class="container" style="margin: auto; width: 50%; border: 3px solid lightblue; padding: 15px;" >
@@ -47,8 +64,8 @@
         </form>
 
     </div>
-
     
+    <!-- {% endblock navbar %} -->
 </body>
 </html>
 

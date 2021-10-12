@@ -10,6 +10,21 @@
 </head>
 <body>
     
+    <nav class="navbar  fixed-top navbar-dark bg-primary">
+        <div class="container-fluid">
+          <h3 class="navbar-brand">HOME</h3>
+          <form class="d-flex">
+            
+            <a href="{% url 'logout' %}">
+                <button class="btn btn-primary" >
+                    Logout
+                </button> 
+            </a>
+          </form>
+        </div>
+      </nav>
+      <!-- {% block navbar %}
+      {% endblock %} -->
 </body>
 </html>
 !
