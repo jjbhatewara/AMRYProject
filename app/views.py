@@ -1,11 +1,57 @@
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User, auth, Group
 from django.shortcuts import redirect, render, HttpResponse
-from .forms import SatImageForm
+from .forms import SatImageForm, UserRegisterForm
 import cv2
 import numpy as np
 from .models import *
+from django.contrib import messages
+from AMRY import settings
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.template.loader import get_template
+from django.template import Context
 # Create your views here.
 
+def signup(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+            messages.success(request, f'Your account has been created ! You are now able to log in')            
+            return redirect('login')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'signup.html', {'form': form, 'title':'reqister here'})
 
+def Login(request):
+    if request.method == 'POST':
+        # AuthenticationForm_can_also_be_used__
+        username = request.POST['username']
+        password = request.POST['password']
+        print("OK")
+        user = authenticate(request, username = username, password = password)
+        print("user")
+        if user is not None:
+            form = login(request, user)
+            messages.success(request, f' wecome {username} !!')
+            return redirect('home')
+        else:
+            messages.info(request,'Invalid Username or Password')
+    form = AuthenticationForm()
+    form.fields['username'].widget.attrs['class'] = "form-control form-control-lg"
+    form.fields['username'].widget.attrs['placeholder'] = "Username"
+    form.fields['username'].widget.attrs['id'] = "Username"
+    form.fields['password'].widget.attrs['class'] = "form-control form-control-lg"
+    form.fields['password'].widget.attrs['placeholder'] = "password"
+    form.fields['password'].widget.attrs['id'] = "typePasswordX" 
+    return render(request, 'login.html', {'form':form, 'title':'log in'})
+
+
+
+@login_required
 def index(req):
     if req.method == 'POST':
         form = SatImageForm(req.POST, req.FILES)

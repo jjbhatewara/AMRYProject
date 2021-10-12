@@ -18,16 +18,21 @@ from django.urls import path
 from app import views
 from django.conf import settings
 from django.conf.urls.static import static
+# from user import views as user_view
+from django.contrib.auth import views as auth
 
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',views.index),
+    path('signup',views.signup,name='signup'),
+    path('',views.Login,name='login'),
+    path('logout/', auth.LogoutView.as_view(template_name ='login.html'), name ='logout'),
     path('success', views.success, name='success'),
     path('plane', views.plane, name='plane'),
     path('road', views.road, name='road'),
+    path('home',views.index,name='home')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
