@@ -24,18 +24,18 @@
     <nav class="navbar  fixed-top navbar-dark bg-primary">
         <div class="container-fluid">
             <h3 class="navbar-brand">HOME</h3>
-            <form class="d-flex">                            
-                <a href="{% url 'logout' %}">
-                <button class="btn btn-primary" >
-                    <span > Logout</span> 
-                    <img src="static\images\img_avatar1.png" alt="Avatar Logo" style="width:40px;" class="rounded-pill">
-                </button> 
-                </a>
+            <form class="d-flex">           
+                <span class="text text-light"><span style="margin-right:10px">Hello, {{user.username}}</span>
+                    <a class="btn btn-primary" href="{% url 'logout'%}">
+                        <span > Logout</span> 
+                        <img src="static\images\img_avatar1.png" alt="Avatar Logo" style="width:40px;" class="rounded-pill">
+                    </a>
+                </span>       
+                
           </form>
         </div>
       </nav>
-  
-    
+          
     <!-- {% block navbar %} -->
     <br><br><br>
     <h1 style="text-align: center; color: red; " >Welcome to SIP</h1>
@@ -49,6 +49,7 @@
                         {{form.Sat_Main_Img}}
                     </div>
                 </div>
+                <br>
                 <div class="form-group row" style="margin: auto; width: 50%; border: 1.5px solid green; padding: 15px;" >                    
                     <div class="col-sm-8">
                         {{ form.action|as_crispy_field }}
@@ -58,11 +59,16 @@
             </div>
             <br><br><br>
             <div >
-                <button type="submit" class=" col-sm-6 btn btn-success">Upload</button>
-            </div>
-            
+                <button type="submit" class=" btn btn-primary btn-lg" 
+                id="load1" 
+                data-loading-text="Loading"
+                >
+                Upload
+                    <!-- <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Loading... -->
+                </button>
+            </div>         
         </form>
-
     </div>
     
     <!-- {% endblock navbar %} -->
@@ -73,7 +79,4 @@
     .custom-radio-list {
     list-style-type: none;
 }
-
-
-
 </style>

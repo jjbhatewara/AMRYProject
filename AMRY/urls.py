@@ -25,13 +25,15 @@ from django.contrib.auth import views as auth
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), 
     path('signup',views.signup,name='signup'),
     path('',views.Login,name='login'),
-    path('logout/', auth.LogoutView.as_view(template_name ='login.html'), name ='logout'),
+    # path('logout', auth.LogoutView.as_view(template_name ='login.html'), name ='Logout'),
+    path('logout',views.logout, name='logout'),
     path('success', views.success, name='success'),
     path('plane', views.plane, name='plane'),
     path('road', views.road, name='road'),
+    path('building', views.building, name='building'),
     path('home',views.index,name='home')
 ]
 if settings.DEBUG:

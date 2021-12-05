@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+{% load crispy_forms_tags %}
+{% load static %}
+
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +11,44 @@
     <title>Plane</title>
 </head>
 <body>
-    <img src="{{ url }}"  alt="IMG" />
+    <a href="#" class="previous">&laquo;previous</a>
+    <h1>Plane Output :-</h1>  
+    <!-- <nav class="navbar  fixed-top navbar-dark bg-primary">
+        <div class="container-fluid">
+            <h3 class="navbar-brand">HOME</h3>
+            <form class="d-flex">           
+                <span class="text text-light"><span style="margin-right:10px">Hello, {{user.username}}</span>
+                    <a class="btn btn-primary" href="{% url 'logout'%}">
+                        <span > Logout</span> 
+                        <img src="static\images\img_avatar1.png" alt="Avatar Logo" style="width:40px;" class="rounded-pill">
+                    </a>
+                </span>       
+                
+          </form>
+        </div>
+      </nav> -->
+    <!-- <img src="{{ url }}"  alt="IMG" /> -->
+    <div class="container mt-3">              
+        <img src="{{ url }}" class="img-thumbnail" alt="Object Image" width="1000" height="1000" > 
+    </div>
 </body>
 </html>
+
+<style>
+    a {
+      text-decoration: none;
+      display: inline-block;
+      padding: 8px 16px;
+    }
+    
+    a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    
+    .previous {
+      background-color: #318cf5;
+      color: black;
+    }
+    h1 {text-align: center;}
+</style>

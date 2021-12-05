@@ -1,16 +1,25 @@
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.models import User, auth, Group
-from django.shortcuts import redirect, render, HttpResponse
-from .forms import SatImageForm, UserRegisterForm
+import os
+import sys
+
 import cv2
 import numpy as np
-from .models import *
-from django.contrib import messages
 from AMRY import settings
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.template.loader import get_template
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import Group, User, auth
+from django.shortcuts import HttpResponse, redirect, render
 from django.template import Context
+from django.template.loader import get_template
+
+from .forms import SatImageForm, UserRegisterForm
+from .models import *
+from .Roads.roads import Roads
+
+# sys.path.append('../yolov5/')
+
+
 # Create your views here.
 
 def signup(request):
@@ -24,16 +33,16 @@ def signup(request):
             return redirect('login')
     else:
         form = UserRegisterForm()
-    return render(request, 'signup.html', {'form': form, 'title':'reqister here'})
+    return render(request, 'signup.html', {'form': form, 'title':'reister here'})
 
 def Login(request):
     if request.method == 'POST':
         # AuthenticationForm_can_also_be_used__
         username = request.POST['username']
         password = request.POST['password']
-        print("OK")
+        # print("OK")
         user = authenticate(request, username = username, password = password)
-        print("user")
+        # print("user")
         if user is not None:
             form = login(request, user)
             messages.success(request, f' wecome {username} !!')
@@ -49,55 +58,72 @@ def Login(request):
     form.fields['password'].widget.attrs['id'] = "typePasswordX" 
     return render(request, 'login.html', {'form':form, 'title':'log in'})
 
-
+def logout(request):
+    """Logout Function for all users."""
+    auth.logout(request)
+    return redirect('/')
 
 @login_required
 def index(req):
+    # print(req.user)
     if req.method == 'POST':
-        form = SatImageForm(req.POST, req.FILES)
+        form = SatImageForm(req.POST,req.FILES)
+        # print(form)
+        # form.created_by = req.user
+        # print(form.created_by)
         # details = {}        
         # details['action'] = req.POST['action']
         # details['file_loc'] = 'media/images/'+ str(req.FILES['Sat_Main_Img'])
         if form.is_valid():
-            form.save()
+            obj = form.save(req.user)
+            # print(obj.Sat_Main_Img)
             act = req.POST['action']
             req.session['action'] = act
-            req.session['file_loc'] = 'media/images/' + \
-            str(req.FILES['Sat_Main_Img'])
-            if int(act):
+            req.session['file_loc'] = str (obj.Sat_Main_Img)
+            # req.session['file_loc'] = 'media/images/' + \
+            # str(req.FILES['Sat_Main_Img'])
+            temp_sel = int(act)
+            if temp_sel == 1:
                 return redirect('plane')
-            else :
+            elif temp_sel == 0 :
                 return redirect('road')
+            else:
+                return redirect('building')
+
     else:
         form = SatImageForm( initial={'action': '0'} )
     return render(req, 'index.html', {'form': form})
 
-
+@login_required
 def success(req):
     print("suc")
     print(req.session.get('action'))
     return HttpResponse('successfully uploaded')
 
-
+@login_required
 def plane(req):
     loc = req.session.get('file_loc')
-    img = cv2.imread(loc)
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    mask = cv2.inRange(hsv,(102,73,145),(123,182,242))
-    imask = mask>0
-    green = np.zeros_like(img, np.uint8)
-    green[imask] = img[imask]
-    ## save  
-    cnt = 0
-    if SatImage.objects.exists():
-        id1 = SatImage.objects.latest('id')
-        cnt+=1
-    cnt+=1
-    Out_location = "media/Output/"+ str(cnt) + ".jpg"
-    cv2.imwrite(Out_location,green)
-    return render(req, 'plane.html', {'url': Out_location})
+    inp_loc = "media/" + loc
+    temp = loc.split("/")
+    para = "python ../yolov5/detect.py --weights ../yolov5/best.pt --img 416 --conf 0.4 --imgname "+ temp[-1] +" --source " + inp_loc
+    # para = "python ../yolov5/detect.py  --source 0" 
+    print("RUNNING YOLOv5")
+    os.system(para)
+    loc = "media/Output/" + temp[-1]
+    return render(req, 'plane.html', {'url': loc})
 
-
+@login_required
 def road(req):
+    
+    loc = req.session.get('file_loc')
+    inp_loc = "media/" + loc
+    Roads(inp_loc)
     return HttpResponse('road') 
 
+@login_required
+def building(req):
+    
+    loc = req.session.get('file_loc')
+    inp_loc = "media/" + loc
+    Roads(inp_loc)
+    return HttpResponse('road') 
