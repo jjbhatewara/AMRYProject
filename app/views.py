@@ -16,6 +16,7 @@ from django.template.loader import get_template
 from .forms import SatImageForm, UserRegisterForm
 from .models import *
 from .Roads.roads import Roads
+from .Splitting.gdalSplit import split_tiff
 
 # sys.path.append('../yolov5/')
 
@@ -79,7 +80,11 @@ def index(req):
             # print(obj.Sat_Main_Img)
             act = req.POST['action']
             req.session['action'] = act
-            req.session['file_loc'] = str (obj.Sat_Main_Img)
+            imgPath = str (obj.Sat_Main_Img)
+            req.session['file_loc'] = imgPath
+            # print(imgPath)
+            
+
             # req.session['file_loc'] = 'media/images/' + \
             # str(req.FILES['Sat_Main_Img'])
             temp_sel = int(act)
@@ -103,12 +108,22 @@ def success(req):
 @login_required
 def plane(req):
     loc = req.session.get('file_loc')
-    inp_loc = "media/" + loc
-    temp = loc.split("/")
+    if loc.endswith('.tiff') or loc.endswith('.tif')  :
+            pathSplit = "media/" + loc
+            loc = (split_tiff(pathSplit))
+            inp_loc = loc
+    else:
+        inp_loc = "media/" + loc
+
+    if loc.__contains__("/"):
+        temp = loc.split("/") 
+    else:
+        temp = loc.split("\\") 
     para = "python ../yolov5/detect.py --weights ../yolov5/best.pt --img 416 --conf 0.4 --imgname "+ temp[-1] +" --source " + inp_loc
     # para = "python ../yolov5/detect.py  --source 0" 
     print("RUNNING YOLOv5")
     os.system(para)
+
     loc = "media/Output/" + temp[-1]
     return render(req, 'plane.html', {'url': loc})
 
@@ -125,5 +140,5 @@ def building(req):
     
     loc = req.session.get('file_loc')
     inp_loc = "media/" + loc
-    Roads(inp_loc)
+    # Roads(inp_loc)
     return HttpResponse('road') 
