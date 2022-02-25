@@ -28,10 +28,12 @@ image_size=128
 
 def Roads(path):
     print(path)
-    # image = cv2.imread(path)
-    # image = cv2.resize(image, (image_size, image_size))
-    # image = image/255.0
-    # image = tf.expand_dims(image, axis=0)
-    # image = np.array(image)
-    # result = model.predict(image)
+    image = cv2.imread(path)
+    image = cv2.resize(image, (image_size, image_size))
+    image = image/255.0
+    image = tf.expand_dims(image, axis=0)
+    image = np.array(image)
+    print(image)
+    result = model.predict(image)
+    print(result)
     return path

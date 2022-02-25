@@ -46,7 +46,7 @@ def Login(request):
         # print("user")
         if user is not None:
             form = login(request, user)
-            messages.success(request, f' wecome {username} !!')
+            messages.success(request, f' welcome {username} !!')
             return redirect('home')
         else:
             messages.info(request,'Invalid Username or Password')
@@ -101,8 +101,8 @@ def index(req):
 
 @login_required
 def success(req):
-    print("suc")
-    print(req.session.get('action'))
+    # print("suc")
+    # print(req.session.get('action'))
     return HttpResponse('successfully uploaded')
 
 @login_required
@@ -132,7 +132,9 @@ def road(req):
     
     loc = req.session.get('file_loc')
     inp_loc = "media/" + loc
-    Roads(inp_loc)
+    print("OKOKOKOKOKOK")
+    print()
+    print("ROADS : "+Roads(inp_loc))
     return HttpResponse('road') 
 
 @login_required

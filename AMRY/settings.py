@@ -31,7 +31,7 @@ import socket
 hostname = socket.gethostname()    
 IPAddr = socket.gethostbyname(hostname)  
 
-ALLOWED_HOSTS = ["127.0.0.1",'0.0.0.0',IPAddr]
+ALLOWED_HOSTS = ["127.0.0.1",'0.0.0.0',IPAddr,'117.215.29.96']
 
 
 # Application definition
